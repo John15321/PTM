@@ -7,8 +7,7 @@
                 "/usr/lib/avr/include/avr",
                 "/usr/lib/gcc/avr/5.4.0/plugin/include",
                 "/usr/lib/gcc/avr",
-                "/usr/lib/avr",
-                "/usr/bin/avr-gcc"
+                "/usr/lib/avr"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/avr-gcc",

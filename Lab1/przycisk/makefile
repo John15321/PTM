@@ -1,6 +1,6 @@
-FILENAME   = snake
+FILENAME   = przycisk
 DEVICE     = atmega32
-COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
+COMPILE    = avr-g++ -Wall -Os -mmcu=$(DEVICE)
 
 default: compile 
 
