@@ -1,68 +1,81 @@
 #define __AVR_ATmega32__
 #define F_CPU 8000000UL
 
-
 #include <stdbool.h>
 
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "pin_manipulation.h"
+
 #define LED 6
 #define BUTTON 0
 
-#ifndef set_pin_to_high
-/*
-* Sets value on a given pin to High
-*/
-#define set_pin_to_high(port, pin) port |= (1 << pin)
-#endif
+void delay_ms(long unsigned ms)
+{
+    volatile long unsigned i = 0;
+    for (; i < ms; i++)
+        _delay_ms(1);
+}
 
-#ifndef set_pin_to_low
-/*
-* Sets value on a given pin  to Low
-*/
-#define set_pin_to_low(port, pin) port &= ~(1 << pin)
-#endif
-
-#ifndef toggle_pin_state
-/*
-* Toggles output value on a given pin
-*/
-#define toggle_pin_state(port, pin) port ^= (1 << pin)
-#endif
-
-
-#ifndef pin_state
-/*
-* Returns pin state, as either 0 or a non 0 integer
-* 0 if the pin is low, and non-0 if the pin is high
-*/
-#define pin_state(port, pin) port & (1 << pin)
-#endif
-
+void options(uint8_t opt)
+{
+    //opcja pierwsza co sekunde dioda zmienia swoj stan
+    if (opt == 1)
+    {
+        toggle_pin_state(PORTD, LED);
+        _delay_ms(1000);
+    }
+    else if (opt == 2) //opcja druga dioda ciagle swieci
+    {
+        set_pin_to_high(PORTD, LED);
+    }
+    else if (opt == 3) //opcja trzecia dioda zgaszona
+    {
+        set_pin_to_low(PORTD, LED);
+    }
+}
 
 int main()
 {
+    /*
+    * 0 - turned off
+    * 1 - blinking
+    * 2 - turend on
+    */
+    uint8_t opt = 1;
+
     // Set all pins of the PORTD as output
     DDRD = 0xFF;
+
     // Set Pin B0 as input
     set_pin_to_low(DDRB, BUTTON);
-    // DDRB &= ~(1 << BUTTON); 
-    // set_pin_to_low(PORTB, BUTTON);
+    pullup_high(PORTB, BUTTON);
+
+    // Make sure LED is high
     set_pin_to_high(PORTD, LED);
+
     while (1)
     {
-
-        if (!(pin_state(PORTB, BUTTON)))
+        //sprawdzanie czy przycisk jest wcisniety
+        if (bit_is_clear(PINB, BUTTON))
         {
-            set_pin_to_low(PORTD, LED);
+            //zmiekszenie wartosci opt o
+            opt++;
+            //jesli opt jest wieksze niz 3 ustaw wartosc na 1
+            if (opt > 3)
+                opt = 1;
         }
-        else
+        //jesli przycisk jest wciaz wcisniety wywoluje sie poprzednia opcja diody
+        while (bit_is_clear(PINB, BUTTON))
         {
-            set_pin_to_high(PORTD, LED);
+            if (opt == 1)
+                options(3);
+            else
+                options(opt - 1);
         }
-        
-        
+        //wywolanie opcji nr opt
+        options(opt);
     }
     return 0;
 }

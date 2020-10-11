@@ -26,10 +26,6 @@ enum State
     STATE_ON
 };
 
-bool read_button()
-{
-    return PINB & PIN_BUTTON;
-}
 
 class Button
 {
