@@ -1,6 +1,6 @@
-FILENAME   = przycisk
+FILENAME   = myblink
 DEVICE     = atmega32
-COMPILE    = avr-g++ -Wall -Os -mmcu=$(DEVICE)
+COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 
 default: compile 
 
