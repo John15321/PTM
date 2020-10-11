@@ -1,4 +1,4 @@
-FILENAME   = myblink
+FILENAME   = button_example
 DEVICE     = atmega32
 COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 
