@@ -94,9 +94,9 @@ void LCD2x16_pos(int wiersz, int kolumna)
 
 int _sp = 40;
 int _h = 8;
-float _pv;
+int _pv;
 int _e;
-//char *float_str;
+
 int _ipv;
 int _decpv;
 
@@ -122,10 +122,6 @@ int main(void)
 	ADMUX = 0x40;
 	ADCSRA = 0xe0;
 
-	// Jakub Olejnik 241550
-	// Aleksander Pucher 241556
-	// Agnieszka Ganowicz 241494
-
 	while (1)
 	{
 		// Start an ADC conversion by setting ADSC bit (bit 6)
@@ -135,9 +131,9 @@ int main(void)
 		while(ADCSRA & (1 << ADSC));
 
 		_pv = ADC;
-		_ipv = _pv / 10;
+		_ipv = (_pv / 1024)*100;
 		_e = _sp - _ipv;
-		_decpv = (_pv - _ipv * 10);
+		_decpv = (_pv - _ipv);
 
 		// zapalanie diody
 		if (_e > _h / 2)
@@ -181,7 +177,7 @@ int main(void)
 		sprintf(tmp, "H=%2d E=%3d.%1d%%wwwww", _h, _e, _decpv);
 		for (i = 0; i < 16; i++)
 			LCD2x16_putchar(tmp[i]);
-		delay_ms(1000); // bylo 1000
+		delay_ms(500); // bylo 1000
 	}
 
 	return 0;
