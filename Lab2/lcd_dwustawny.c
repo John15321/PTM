@@ -4,10 +4,9 @@
 /*      www   : are.net.pl            */
 /**************************************/
 
-#define F_CPU 8000000UL // 1 MHz
 #define __AVR_ATmega32__
+#define F_CPU 8000000UL
 
-//#define F_CPU 14.7456E6
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
@@ -27,10 +26,6 @@ void delay_us(int us)
 		_delay_us(1);
 }
 
-//RS PA0
-//RW PA1
-//E  PA2
-//DATA PD
 
 #define RS 0
 #define RW 1
@@ -92,20 +87,26 @@ void LCD2x16_pos(int wiersz, int kolumna)
 	_delay_us(120);
 }
 
-int _sp = 40;
+// Set point (in %)
+int set_point = 40;
+// Histereza (in %)
 int _h = 8;
-int _pv;
+// Error value
 int _e;
-
-int _ipv;
-int _decpv;
+// Decimal value of the error
+int dec_e;
+// Whole process value (in 0-1023 range)
+float process_value;
+// Integer part of process value
+int int_process_value;
+// Decimal part of process value
+int dec_process_value;
 
 int main(void)
 {
 	char tmp[16];
 
 	int i;
-	int j = 1;
 
 	DDRD = 0xff;
 	PORTD = 0x00;
@@ -128,32 +129,34 @@ int main(void)
 		ADCSRA = ADCSRA | (1 << ADSC);
 
 		// Wait until the ADSC bit has been cleared
-		while(ADCSRA & (1 << ADSC));
+		while (ADCSRA & (1 << ADSC))
+			;
 
-		_pv = ADC;
-		_ipv = (_pv / 1024)*100;
-		_e = _sp - _ipv;
-		_decpv = (_pv - _ipv);
+		process_value = ADC;
+		int_process_value = (process_value / 1023) * 100;
+		_e = set_point - int_process_value;
+		dec_process_value = (((process_value / 1023) * 100) - int_process_value) * 100;
+		dec_e = (100 - dec_process_value) % 100;
 
-		// zapalanie diody
-		if (_e > _h / 2)
+		// LED On
+		if (_e > (_h / 2))
 		{
 			PORTC = (0x01 << 5);
 		}
 
-		// gaszenie diody
-		if (_e < -_h / 2)
+		// LED Off
+		if (_e < -(_h / 2))
 		{
 			PORTC = ~(0x01 << 5);
 		}
 
 		if (!(PINB & (8 << PB0)))
 		{
-			_sp = 50;
+			set_point = 50;
 		}
 		if (!(PINB & (4 << PB0)))
 		{
-			_sp = 40;
+			set_point = 40;
 		}
 		if (!(PINB & (2 << PB0)))
 		{
@@ -164,20 +167,20 @@ int main(void)
 			_h = 10;
 		}
 
-		//LCD2x16_clear();
-		LCD2x16_pos(1, 1); //bylo 2,1
-		//sprintf(tmp,"Dzialam juz %2is ",j);
-		sprintf(tmp, "SP=%2d PV=%3d.%1d%% www", _sp, _ipv, _decpv);
-		j++;
+		LCD2x16_pos(1, 1);
+		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", set_point, int_process_value, dec_process_value);
 		for (i = 0; i < 16; i++)
+		{
 			LCD2x16_putchar(tmp[i]);
+		}
 
-		LCD2x16_pos(2, 1); //bylo 2,1
-		//sprintf(tmp,"Dzialam juz %2is ",j);
-		sprintf(tmp, "H=%2d E=%3d.%1d%%wwwww", _h, _e, _decpv);
+		LCD2x16_pos(2, 1);
+		sprintf(tmp, "H=%2d   E=%3d.%1d%%  ", _h, _e, dec_e);
 		for (i = 0; i < 16; i++)
+		{
 			LCD2x16_putchar(tmp[i]);
-		delay_ms(500); // bylo 1000
+		}
+		delay_ms(500);
 	}
 
 	return 0;
