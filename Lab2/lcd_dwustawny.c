@@ -5,6 +5,8 @@
 /**************************************/
 
 #define F_CPU 8000000UL // 1 MHz
+#define __AVR_ATmega32__
+
 //#define F_CPU 14.7456E6
 #include <avr/io.h>
 #include <stdio.h>
