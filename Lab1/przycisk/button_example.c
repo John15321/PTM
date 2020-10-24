@@ -38,11 +38,6 @@ void options(uint8_t opt)
 
 int main()
 {
-    /*
-    * 0 - turned off
-    * 1 - blinking
-    * 2 - turend on
-    */
     uint8_t opt = 1;
 
     // Set all pins of the PORTD as output
