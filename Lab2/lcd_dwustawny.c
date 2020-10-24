@@ -102,13 +102,10 @@ int _decpv;
 
 int main(void)
 {
-	char www[16] = "www-> are.net.pl";
-	char email[16] = "biuro@are.net.pl";
 	char tmp[16];
 
 	int i;
 	int j = 1;
-	int pomiar;
 
 	DDRD = 0xff;
 	PORTD = 0x00;
@@ -122,17 +119,6 @@ int main(void)
 	LCD2x16_init();
 	LCD2x16_clear();
 
-	for (i = 0; i < 16; i++)
-		LCD2x16_putchar(www[i]);
-	LCD2x16_pos(2, 1);
-	for (i = 0; i < 16; i++)
-		LCD2x16_putchar(email[i]);
-
-	delay_ms(3000);
-	LCD2x16_clear();
-	for (i = 0; i < 16; i++)
-		LCD2x16_putchar(www[i]);
-
 	ADMUX = 0x40;
 	ADCSRA = 0xe0;
 
@@ -142,6 +128,12 @@ int main(void)
 
 	while (1)
 	{
+		// Start an ADC conversion by setting ADSC bit (bit 6)
+		ADCSRA = ADCSRA | (1 << ADSC);
+
+		// Wait until the ADSC bit has been cleared
+		while(ADCSRA & (1 << ADSC));
+
 		_pv = ADC;
 		_ipv = _pv / 10;
 		_e = _sp - _ipv;
@@ -180,7 +172,7 @@ int main(void)
 		LCD2x16_pos(1, 1); //bylo 2,1
 		//sprintf(tmp,"Dzialam juz %2is ",j);
 		sprintf(tmp, "SP=%2d PV=%3d.%1d%% www", _sp, _ipv, _decpv);
-		//j++;
+		j++;
 		for (i = 0; i < 16; i++)
 			LCD2x16_putchar(tmp[i]);
 
@@ -189,7 +181,7 @@ int main(void)
 		sprintf(tmp, "H=%2d E=%3d.%1d%%wwwww", _h, _e, _decpv);
 		for (i = 0; i < 16; i++)
 			LCD2x16_putchar(tmp[i]);
-		delay_ms(500); // bylo 1000
+		delay_ms(1000); // bylo 1000
 	}
 
 	return 0;
