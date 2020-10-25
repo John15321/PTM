@@ -141,13 +141,13 @@ int main(void)
 		// LED On
 		if (_e > (_h / 2))
 		{
-			PORTC = (0x01 << 5);
+			PORTC = ~(0x01 << 5);
 		}
 
 		// LED Off
 		if (_e < -(_h / 2))
 		{
-			PORTC = ~(0x01 << 5);
+			PORTC = (0x01 << 5);
 		}
 
 		if (!(PINB & (8 << PB0)))
