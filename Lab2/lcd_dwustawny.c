@@ -135,8 +135,8 @@ int main(void)
 		process_value = ADC;
 		int_process_value = (process_value / 1023) * 100;
 		_e = set_point - int_process_value;
-		dec_process_value = (((process_value / 1023) * 100) - int_process_value) * 100;
-		dec_e = (100 - dec_process_value) % 100;
+		dec_process_value = (((process_value / 1023) * 100) - int_process_value) * 10;
+		dec_e = (10 - dec_process_value) % 10;
 
 		// LED On
 		if (_e > (_h / 2))
