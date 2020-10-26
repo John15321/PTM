@@ -4,6 +4,9 @@
 /*      www   : are.net.pl            */
 /**************************************/
 
+// Jan Bronicki 249011
+// Borys Staszczak 248958
+
 #define __AVR_ATmega32__
 #define F_CPU 8000000UL
 
