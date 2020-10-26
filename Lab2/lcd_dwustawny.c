@@ -93,10 +93,14 @@ int set_point = 40;
 int _h = 8;
 // Error value
 int _e;
+// Integer part of the error
+int int_e;
 // Decimal value of the error
 int dec_e;
 // Whole process value (in 0-1023 range)
 float process_value;
+// Process value with decimal part
+int full_process_value;
 // Integer part of process value
 int int_process_value;
 // Decimal part of process value
@@ -133,10 +137,15 @@ int main(void)
 			;
 
 		process_value = ADC;
-		int_process_value = (process_value / 1023) * 100;
-		_e = set_point - int_process_value;
-		dec_process_value = (((process_value / 1023) * 100) - int_process_value) * 10;
-		dec_e = (10 - dec_process_value) % 10;
+
+		full_process_value = (process_value / 1023.0) * 1000;
+		int_process_value = full_process_value / 10;
+		dec_process_value = full_process_value % 10; 
+
+		_e = (set_point * 10) - full_process_value;
+		int_e = _e / 10;
+		dec_e = _e % 10;
+
 
 		// LED On
 		if (_e > (_h / 2))
@@ -175,7 +184,7 @@ int main(void)
 		}
 
 		LCD2x16_pos(2, 1);
-		sprintf(tmp, "H=%2d   E=%3d.%1d%%  ", _h, _e, dec_e);
+		sprintf(tmp, "H=%2d   E=%3d.%1d%%  ", _h, int_e, dec_e);
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
