@@ -1,4 +1,4 @@
-FILENAME   = lcd_dwustawny
+FILENAME   = krz
 DEVICE     = atmega32
 COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 
