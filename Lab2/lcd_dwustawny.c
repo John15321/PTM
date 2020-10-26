@@ -180,14 +180,14 @@ int main(void)
 		}
 
 		LCD2x16_pos(1, 1);
-		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", set_point, int_process_value, dec_process_value);
+		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", set_point, int_process_value, abs(dec_process_value));
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
 		}
 
 		LCD2x16_pos(2, 1);
-		sprintf(tmp, "H=%2d   E=%3d.%1d%%  ", _h, int_e, dec_e);
+		sprintf(tmp, "H=%2d   E=%3d.%1d%%  ", _h, int_e, abs(dec_e));
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
