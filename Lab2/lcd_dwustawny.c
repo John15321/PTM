@@ -143,7 +143,7 @@ int main(void)
 
 		full_process_value = (process_value / 1023.0) * 1000;
 		int_process_value = full_process_value / 10;
-		dec_process_value = full_process_value % 10; 
+		dec_process_value = full_process_value % 10;
 
 		_e = (set_point * 10) - full_process_value;
 		int_e = _e / 10;
