@@ -142,11 +142,13 @@ int main(void)
 		while (ADCSRA & (1 << ADSC))
 			;
 
-		//_n=_h+_h;
 		process_value = ADC;
 		_pv = (process_value / 1023.0) * 1000;
 		_ipv = _pv / 10;
 		_decpv = _pv % 10;
+
+		// Jan Bronicki 249011
+		// Borys Staszczak 248958
 
 		_e = _sp - _pv;
 		int_e = _e / 10;

@@ -1,5 +1,8 @@
 <circuit reactStep="50" type="simulide_0.4" speed="1000000" animate="1" noLinAcc="14">
  
+Voltage Source-67: 
+<item x="-320" itemtype="Voltage Source" y="-456" hflip="1" labely="-80" valLabelx="-26" Unit=" V" Voltage="5" Show_id="false" valLabely="10" objectName="Voltage Source-67" Show_Volt="true" vflip="1" id="Voltage Source-67" labelrot="0" labelx="-40" valLabRot="0" rotation="0"/>
+ 
 Led-16: 
 <item x="-52" Resistance="0.59999999999999998" itemtype="Led" y="-300" hflip="1" Threshold="2.3999999999999999" MaxCurrent="0.029999999999999999" Color="0" labely="-24" valLabelx="0" Show_id="false" valLabely="0" Grounded="true" objectName="Led-16" vflip="1" id="Led-75" labelrot="0" labelx="-16" valLabRot="0" rotation="0"/>
  
@@ -41,9 +44,6 @@ Led-4:
  
 Resistor-3: 
 <item x="-112" Show_res="true" Resistance="320" itemtype="Resistor" y="-268" hflip="1" labely="-20" valLabelx="-16" Unit=" Ω" Show_id="false" valLabely="6" objectName="Resistor-3" vflip="1" id="Resistor-59" labelrot="0" labelx="-12" valLabRot="0" rotation="0"/>
- 
-Fixed Voltage-2: 
-<item x="-320" itemtype="Fixed Voltage" y="-440" hflip="1" labely="-24" valLabelx="-16" Unit=" V" Voltage="2.8199999999999998" Show_id="false" valLabely="8" objectName="Fixed Voltage-2" Show_Volt="true" vflip="1" id="Fixed Voltage-67" labelrot="0" labelx="-64" valLabRot="0" rotation="90"/>
  
 Connector-17: 
 <item x="-248" startpinid="Hd44780-6-PinRW" itemtype="Connector" y="-404" hflip="1" labely="-24" endpinid="atmega32-5-PC1" valLabelx="0" enodeid="Circ_eNode-18" Show_id="false" valLabely="0" objectName="Connector-17" vflip="1" id="Connector-8" labelrot="0" labelx="-16" valLabRot="0" rotation="0" pointList="-248,-404,-248,-264,-360,-264"/>
@@ -111,11 +111,11 @@ Connector-59:
 Connector-61: 
 <item x="-128" startpinid="Resistor-15-lPin" itemtype="Connector" y="-300" hflip="1" labely="-24" endpinid="atmega32-5-PC4" valLabelx="0" enodeid="Circ_eNode-62" Show_id="false" valLabely="0" objectName="Connector-61" vflip="1" id="Connector-73" labelrot="0" labelx="-16" valLabRot="0" rotation="0" pointList="-128,-300,-144,-300,-144,-288,-360,-288"/>
  
-Connector-63: 
-<item x="-320" startpinid="Fixed Voltage-2-outnod" itemtype="Connector" y="-424" hflip="1" labely="-24" endpinid="atmega32-5-PA0" valLabelx="0" enodeid="Circ_eNode-64" Show_id="false" valLabely="0" objectName="Connector-63" vflip="1" id="Connector-68" labelrot="0" labelx="-16" valLabRot="0" rotation="0" pointList="-320,-424,-320,-400,-360,-400"/>
- 
 Connector-57: 
 <item x="-96" startpinid="Resistor-15-rPin" itemtype="Connector" y="-300" hflip="1" labely="-24" endpinid="Led-16-lPin" valLabelx="0" enodeid="enode-57" Show_id="false" valLabely="0" objectName="Connector-57" vflip="1" id="Connector-57" labelrot="0" labelx="-16" valLabRot="0" rotation="0" pointList="-96,-300,-68,-300"/>
+ 
+Connector-75: 
+<item x="-360" startpinid="atmega32-5-PA0" itemtype="Connector" y="-400" hflip="1" labely="-24" endpinid="Voltage Source-67-outPin" valLabelx="0" enodeid="enode-75" Show_id="false" valLabely="0" objectName="Connector-75" vflip="1" id="Connector-75" labelrot="0" labelx="-16" valLabRot="0" rotation="0" pointList="-360,-400,-288,-400,-288,-456,-304,-456"/>
  
 PlotterWidget-66: 
 <item toolTip="" minimumSize="" itemtype="Plotter" maximumHeight="200" statusTip="" maximumSize="" windowTitle="" childrenRect="" pos="" acceptDrops="false" focusPolicy="0" frameSize="" layoutDirection="0" childrenRegion="" updatesEnabled="true" minimized="false" fullScreen="false" baseSize="" windowIconText="" MinVolt="-500" sizePolicy="" y="0" height="200" mouseTracking="false" windowIcon="" focus="false" sizeHint="" maximized="false" Tracks="1" x="0" toolTipDuration="-1" whatsThis="" frameGeometry="" styleSheet="" size="" accessibleDescription="" maximumWidth="1000" objectName="PlotterWidget-66" palette="" windowModality="0" autoFillBackground="false" windowModified="false" modal="false" enabled="true" locale="" Scale="1" minimumWidth="200" font="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" minimumSizeHint="" windowFilePath="" normalGeometry="" minimumHeight="200" sizeIncrement="" windowOpacity="1" inputMethodHints="0" width="200" contextMenuPolicy="1" geometry="" MaxVolt="500" rect="" cursor="" accessibleName="" visible="false" isActiveWindow="true"/>
