@@ -1,8 +1,8 @@
-FILENAME   = lcd_dwustawny
+FILENAME   = lcd_trojstawny
 DEVICE     = atmega32
 COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 
-default: compile 
+default: compile
 
 compile:
 	$(COMPILE) -c $(FILENAME).c -o $(FILENAME).o

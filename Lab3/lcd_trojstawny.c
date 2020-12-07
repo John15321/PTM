@@ -4,12 +4,8 @@
 /*      www   : are.net.pl            */
 /**************************************/
 
-// Jan Bronicki 249011
-// Borys Staszczak 248958
-
-#define __AVR_ATmega32__
-#define F_CPU 8000000UL
-
+#define F_CPU 8000000UL // 1 MHz
+//#define F_CPU 14.7456E6
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
@@ -28,6 +24,11 @@ void delay_us(int us)
 	for (i = 0; i < us; i++)
 		_delay_us(1);
 }
+
+//RS PA0
+//RW PA1
+//E  PA2
+//DATA PD
 
 #define RS 0
 #define RW 1
@@ -90,7 +91,7 @@ void LCD2x16_pos(int wiersz, int kolumna)
 }
 
 // Set point (in %)
-int set_point = 40;
+int _sp = 40;
 // Histereza (in %)
 int _h = 8;
 // Error value
@@ -102,14 +103,20 @@ int dec_e;
 // Whole process value (in 0-1023 range)
 float process_value;
 // Process value with decimal part
-int full_process_value;
+int _pv;
 // Integer part of process value
-int int_process_value;
+int _ipv;
 // Decimal part of process value
-int dec_process_value;
+int _decpv;
+
+int _n = 0;
+
+int _ipv;
+int _decpv;
 
 int main(void)
 {
+
 	char tmp[16];
 
 	int i;
@@ -117,7 +124,7 @@ int main(void)
 	DDRD = 0xff;
 	PORTD = 0x00;
 	DDRC = 0xff;
-	PORTC = 0x00;
+	PORTC = 0xff;
 	DDRB = 0x00;
 	PORTB = 0xff;
 
@@ -138,59 +145,75 @@ int main(void)
 		while (ADCSRA & (1 << ADSC))
 			;
 
+		//_n=_h+_h;
 		process_value = ADC;
+		_pv = (process_value / 1023.0) * 1000;
+		_ipv = _pv / 10;
+		_decpv = _pv % 10;
 
-		full_process_value = (process_value / 1023.0) * 1000;
-		int_process_value = full_process_value / 10;
-		dec_process_value = full_process_value % 10;
-
-		_e = (set_point * 10) - full_process_value;
+		_e = (_sp * 10) - _pv;
 		int_e = _e / 10;
 		dec_e = _e % 10;
 
-		// LED On
-		if (_e > (_h / 2))
+		_n = 2 * _h;
+
+		// zapalanie diody CV1
+		if (_e > (_n / 2 + _h))
 		{
-			PORTC = ~(0x01 << 5);
+			PORTC = ~(0x01 << 3);
+		}
+		// gaszenie diody CV1
+		if (_e < _n / 2)
+		{
+			PORTC = (0x01 << 3);
 		}
 
-		// LED Off
-		if (_e < -(_h / 2))
+		// zapalanie diody CV2
+		if (_e < (_n / 2 - _h))
 		{
-			PORTC = (0x01 << 5);
+			PORTC = ~(0x01 << 4);
+		}
+		// gaszenie diody CV2
+		if (_e > -_n / 2)
+		{
+			PORTC = (0x01 << 4);
 		}
 
 		if (!(PINB & (8 << PB0)))
 		{
-			set_point = 50;
+			_sp = 50;
 		}
 		if (!(PINB & (4 << PB0)))
 		{
-			set_point = 40;
+			_sp = 40;
 		}
 		if (!(PINB & (2 << PB0)))
 		{
 			_h = 8;
+			_n = 2 * _h;
 		}
 		if (!(PINB & (1 << PB0)))
 		{
 			_h = 10;
+			_n = 2 * _h;
 		}
 
+		//LCD2x16_clear();
 		LCD2x16_pos(1, 1);
-		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", set_point, int_process_value, abs(dec_process_value));
+		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", _sp, _ipv, abs(_decpv));
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
 		}
 
 		LCD2x16_pos(2, 1);
-		sprintf(tmp, "H=%2d   E=%3d.%1d%%  ", _h, int_e, abs(dec_e));
+		sprintf(tmp, "H=%2d   E=%3d.%1d%% ", _h, int_e, abs(dec_e));
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
 		}
-		delay_ms(500);
+
+		delay_ms(500); // bylo 1000
 	}
 
 	return 0;
