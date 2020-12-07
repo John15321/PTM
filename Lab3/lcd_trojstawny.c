@@ -4,8 +4,12 @@
 /*      www   : are.net.pl            */
 /**************************************/
 
-#define F_CPU 8000000UL // 1 MHz
-//#define F_CPU 14.7456E6
+// Jan Bronicki 249011
+// Borys Staszczak 248958
+
+#define __AVR_ATmega32__
+#define F_CPU 8000000UL
+
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
@@ -85,10 +89,12 @@ void LCD2x16_pos(int wiersz, int kolumna)
 	_delay_us(120);
 }
 
-// Set point (in %)
-int _sp = 40;
-// Histereza (in %)
-int _h = 8;
+// Set point (in 0.1%)
+int _sp = 400;
+// Histereza (in 0.1%)
+int _h = 80;
+// Nieczułość (in 0.1%)
+int _n = 160;
 // Error value
 int _e;
 // Integer part of the error
@@ -104,7 +110,6 @@ int _ipv;
 // Decimal part of process value
 int _decpv;
 
-int _n = 0;
 
 int main(void)
 {
@@ -116,7 +121,7 @@ int main(void)
 	DDRD = 0xff;
 	PORTD = 0x00;
 	DDRC = 0xff;
-	PORTC = 0xff;
+	PORTC = 0x00;
 	DDRB = 0x00;
 	PORTB = 0xff;
 
@@ -143,32 +148,26 @@ int main(void)
 		_ipv = _pv / 10;
 		_decpv = _pv % 10;
 
-		_e = (_sp * 10) - _pv;
+		_e = _sp - _pv;
 		int_e = _e / 10;
 		dec_e = _e % 10;
 
-		_n = 2 * _h;
-
-		// zapalanie diody CV1
-		if (_e > (_n / 2 + _h))
-		{
-			PORTC = ~(0x01 << 3);
-		}
-		// gaszenie diody CV1
-		if (_e < _n / 2)
-		{
-			PORTC = (0x01 << 3);
-		}
-
-		// zapalanie diody CV2
-		if (_e < (_n / 2 - _h))
+		// LED CV1 ON
+		if (_e > ((_n/2)+_h))
 		{
 			PORTC = ~(0x01 << 4);
 		}
-		// gaszenie diody CV2
-		if (_e > -_n / 2)
+
+		// LED OFF
+		if(_e < _n/2 && _e > -_n/2)
 		{
-			PORTC = (0x01 << 4);
+			PORTC=(0x00);
+		}
+
+		// LED CV2 ON
+		if (_e < ((-_n/2)-_h))
+		{
+			PORTC = ~(0x01 << 3);
 		}
 
 		if (!(PINB & (8 << PB0)))
@@ -182,30 +181,29 @@ int main(void)
 		if (!(PINB & (2 << PB0)))
 		{
 			_h = 8;
-			_n = 2 * _h;
+			_n = 16;
 		}
 		if (!(PINB & (1 << PB0)))
 		{
 			_h = 10;
-			_n = 2 * _h;
+			_n = 20;
 		}
 
-		LCD2x16_clear();
+
 		LCD2x16_pos(1, 1);
-		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", _sp, _ipv, abs(_decpv));
+		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", _sp/10, _ipv, abs(_decpv));
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
 		}
 
 		LCD2x16_pos(2, 1);
-		sprintf(tmp, "H=%2d   E=%3d.%1d%% ", _h, int_e, abs(dec_e));
+		sprintf(tmp, "H=%2d   E=%3d.%1d%% ", _h/10, int_e, abs(dec_e));
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
 		}
-
-		delay_ms(500); // bylo 1000
+		delay_ms(500);
 	}
 
 	return 0;
