@@ -25,11 +25,6 @@ void delay_us(int us)
 		_delay_us(1);
 }
 
-//RS PA0
-//RW PA1
-//E  PA2
-//DATA PD
-
 #define RS 0
 #define RW 1
 #define E 2
@@ -110,9 +105,6 @@ int _ipv;
 int _decpv;
 
 int _n = 0;
-
-int _ipv;
-int _decpv;
 
 int main(void)
 {
@@ -198,7 +190,7 @@ int main(void)
 			_n = 2 * _h;
 		}
 
-		//LCD2x16_clear();
+		LCD2x16_clear();
 		LCD2x16_pos(1, 1);
 		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", _sp, _ipv, abs(_decpv));
 		for (i = 0; i < 16; i++)
