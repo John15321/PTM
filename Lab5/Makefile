@@ -1,4 +1,4 @@
-FILENAME   = proporcjonalny
+FILENAME   = prog
 DEVICE     = atmega32
 COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 
