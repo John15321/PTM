@@ -1,5 +1,8 @@
 <circuit type="simulide_0.4" reactStep="50" speed="1000000" animate="1" noLinAcc="14">
  
+TextComponent-105: 
+<item labely="-24" Font_Size="10" hflip="1" labelx="-16" objectName="TextComponent-105" vflip="1" Fixed_Width="true" valLabelx="0" rotation="0" Opacity="1" Text="Borys Sta" itemtype="TextComponent" Margin="5" id="TextComponent-105" labelrot="0" Show_id="false" y="-628" valLabRot="0" x="-300" Border="1" Font="Helvetica [Cronyx]" valLabely="0"/>
+ 
 Voltage Source-34: 
 <item Show_Volt="true" labely="-80" hflip="1" labelx="-40" objectName="Voltage Source-34" Voltage="5" Unit=" V" vflip="1" valLabelx="-26" rotation="0" itemtype="Voltage Source" id="Voltage Source-117" labelrot="0" Show_id="false" y="-492" valLabRot="0" x="-356" valLabely="10"/>
  
@@ -226,6 +229,6 @@ Connector-51:
 <item labely="-24" hflip="1" labelx="-16" objectName="Connector-51" vflip="1" valLabelx="0" rotation="0" itemtype="Connector" endpinid="atmega32-19-PD6" startpinid="Hd44780-18-dataPin6" id="Connector-51" pointList="-208,-396,-208,-232,-432,-232,-432,-292,-416,-292" enodeid="enode-51" labelrot="0" Show_id="false" y="-396" valLabRot="0" x="-208" valLabely="0"/>
  
 PlotterWidget-101: 
-<item windowIconText="" statusTip="" minimized="false" inputMethodHints="0" windowFilePath="" x="0" Tracks="1" mouseTracking="false" minimumHeight="200" windowTitle="" windowOpacity="1" fullScreen="false" minimumSizeHint="" sizePolicy="" frameGeometry="" visible="false" sizeIncrement="" MaxVolt="500" modal="false" cursor="" maximumWidth="1000" windowModality="0" minimumWidth="200" size="" toolTipDuration="-1" contextMenuPolicy="1" height="200" autoFillBackground="false" childrenRect="" maximized="false" windowModified="false" accessibleDescription="" width="200" font="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" styleSheet="" maximumSize="" windowIcon="" whatsThis="" maximumHeight="200" layoutDirection="0" childrenRegion="" normalGeometry="" rect="" y="0" toolTip="" geometry="" baseSize="" objectName="PlotterWidget-101" Scale="1" MinVolt="-500" updatesEnabled="true" focus="false" itemtype="Plotter" locale="" minimumSize="" pos="" enabled="true" isActiveWindow="false" palette="" focusPolicy="0" sizeHint="" acceptDrops="false" accessibleName="" frameSize=""/>
+<item windowIconText="" statusTip="" minimized="false" inputMethodHints="0" windowFilePath="" x="0" Tracks="1" mouseTracking="false" minimumHeight="200" windowTitle="" windowOpacity="1" fullScreen="false" minimumSizeHint="" sizePolicy="" frameGeometry="" visible="false" sizeIncrement="" MaxVolt="500" modal="false" cursor="" maximumWidth="1000" windowModality="0" minimumWidth="200" size="" toolTipDuration="-1" contextMenuPolicy="1" height="200" autoFillBackground="false" childrenRect="" maximized="false" windowModified="false" accessibleDescription="" width="200" font="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" styleSheet="" maximumSize="" windowIcon="" whatsThis="" maximumHeight="200" layoutDirection="0" childrenRegion="" normalGeometry="" rect="" y="0" toolTip="" geometry="" baseSize="" objectName="PlotterWidget-101" Scale="1" MinVolt="-500" updatesEnabled="true" focus="false" itemtype="Plotter" locale="" minimumSize="" pos="" enabled="true" isActiveWindow="true" palette="" focusPolicy="0" sizeHint="" acceptDrops="false" accessibleName="" frameSize=""/>
  
 </circuit>
