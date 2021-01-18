@@ -8,14 +8,14 @@ void delay_ms(int ms)
 {
 	volatile long unsigned int i;
 	for (i = 0; i < ms; i++)
-	_delay_ms(1);
+		_delay_ms(1);
 }
 
 void delay_us(int us)
 {
 	volatile long unsigned int i;
 	for (i = 0; i < us; i++)
-	_delay_us(1);
+		_delay_us(1);
 }
 
 #define RS 0
@@ -78,8 +78,8 @@ void LCD2x16_pos(int wiersz, int kolumna)
 	_delay_us(120);
 }
 
-int _sp = 50;
-int _xp = 40;
+int _sp = 40;
+int _xp = 30;
 int _e;
 int int_e;
 int dec_e;
@@ -87,22 +87,21 @@ float _pv;
 int full_pv;
 int int_pv;
 int dec_pv;
-int _T=20;
+int _T = 20;
 int _cv = 0;
-
 
 int main(void)
 {
 	char tmp[16];
 	int i;
-	
+
 	DDRD = 0xff;
 	PORTD = 0x00;
 	DDRC = 0xff;
 	PORTC = 0x00;
 	DDRB = 0x00;
 	PORTB = 0xff;
-	DDRC = (1<<3)|(1<<4);
+	DDRC = (1 << 3) | (1 << 4);
 	_delay_ms(500);
 
 	LCD2x16_init();
@@ -114,28 +113,32 @@ int main(void)
 	while (1)
 	{
 		ADCSRA = ADCSRA | (1 << ADSC);
-		while (ADCSRA & (1 << ADSC));
+		while (ADCSRA & (1 << ADSC))
+			;
 		_pv = ADC;
 		full_pv = (_pv / 1023.0) * 1000;
 		int_pv = full_pv / 10;
 		dec_pv = full_pv % 10;
-	 // _e = (_sp * 10) - full_pv;
+
 		_e = _sp - int_pv;
 		int_e = _e / 10;
 		dec_e = _e % 10;
 
-	if(_e < -_xp/2) _cv =0;
-	else if(_e >= _xp/2) _cv=20;
-	else _cv = (((_e+_xp/2)*19/_xp)+1);
+		if (_e < -_xp / 2)
+			_cv = 0;
+		else if (_e >= _xp / 2)
+			_cv = 20;
+		else
+			_cv = (((_e + _xp / 2) * 19 / _xp) + 1);
 
-		for (i=0; i<20; i++)
+		for (i = 0; i < 20; i++)
 		{
-			if(i < _cv && _cv != 0)
+			if (i < _cv && _cv != 0)
 			{
 				PORTC |= 1 << PINC3; //wlacz diode
 			}
 			else
-		{
+			{
 				PORTC &= ~(1 << PINC3); //wylacz diode
 			}
 			delay_ms(10);
@@ -160,14 +163,14 @@ int main(void)
 		}
 
 		LCD2x16_pos(1, 1);
-		sprintf(tmp, "SP=%2d%% PV=%2d.%1d%% ", _sp, int_pv, dec_pv);
+		sprintf(tmp, "SP=%2d%% PV=%2d.%1d%% ", _sp, int_pv, abs(dec_pv));
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
 		}
 
 		LCD2x16_pos(2, 1);
-		sprintf(tmp, "XP=%2d%% E=%3d.%1d%%  ", _xp, _e, dec_e);
+		sprintf(tmp, "XP=%2d%% E=%3d.%1d%%  ", _xp, _e, abs(dec_e));
 		for (i = 0; i < 16; i++)
 		{
 			LCD2x16_putchar(tmp[i]);
@@ -177,4 +180,3 @@ int main(void)
 
 	return 0;
 }
-
