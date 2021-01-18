@@ -7,7 +7,6 @@
 // Jan Bronicki 249011
 // Borys Staszczak 248958
 
-#define __AVR_ATmega32__
 #define F_CPU 8000000UL
 
 #include <avr/io.h>
@@ -84,31 +83,9 @@ void LCD2x16_pos(int wiersz, int kolumna)
 	PORTC |= (1 << E);
 	delay_ms(1);
 	PORTD = 0x80 + (wiersz - 1) * 0x40 + (kolumna - 1);
-	delay_ms(1);
 	PORTC &= ~(1 << E);
 	_delay_us(120);
 }
-
-// Set point (in 0.1%)
-int _sp = 400;
-// Hysteresis (in 0.1%)
-int _h = 80;
-// Insensitivity (in 0.1%)
-int _n = 160;
-// Error value
-int _e;
-// Integer part of the error
-int int_e;
-// Decimal value of the error
-int dec_e;
-// Whole process value (in 0-1023 range)
-float process_value;
-// Process value with decimal part
-int _pv;
-// Integer part of process value
-int _ipv;
-// Decimal part of process value
-int _decpv;
 
 int main(void)
 {
@@ -124,86 +101,109 @@ int main(void)
 	DDRB = 0x00;
 	PORTB = 0xff;
 
-	_delay_ms(500);
+	_delay_ms(200);
 
 	LCD2x16_init();
 	LCD2x16_clear();
 
-	ADMUX = 0x40;
-	ADCSRA = 0xe0;
+	// Set point (in 0.1%)
+	int _sp = 60;
+	// Error value
+	int _e;
+	// Decimal value of the error
+	int dec_e;
+	// Whole process value (in 0-1023 range)
+	float process_value;
+	// Process value with decimal part
+	int _pv;
+	// Integer part of process value
+	int _ipv;
+	// Decimal part of process value
+	int _decpv;
+	// Control value
+	int _cv = 0;
+
+	int _Xp = 20;
+
+	int T0 = 20;
 
 	while (1)
 	{
-		// Start an ADC conversion by setting ADSC bit (bit 6)
-		ADCSRA = ADCSRA | (1 << ADSC);
+		ADMUX = 0x40;
+		ADCSRA = 0xe0;
+		_pv = ADC;
+		process_value = (_pv / 1023)*100;
+		_ipv = (int)process_value;
+		_e = _sp - process_value;
+		_decpv = (process_value - _ipv)*10;
+		dec_e = (_e - (int)_e)*10;
 
-		// Wait until the ADSC bit has been cleared
-		while (ADCSRA & (1 << ADSC))
-			;
-
-		process_value = ADC;
-		_pv = (process_value / 1023.0) * 1000;
-		_ipv = _pv / 10;
-		_decpv = _pv % 10;
-
-		// Jan Bronicki 249011
-		// Borys Staszczak 248958
-
-		_e = _sp - _pv;
-		int_e = _e / 10;
-		dec_e = _e % 10;
-
-		// LED CV1 ON
-		if (_e > ((_n / 2) + _h))
+		if (dec_e < 0) //zabezpieczenie przed wyświetlaniem wartości ujemnej czesci dziesietnej
 		{
-			PORTC = ~(0x01 << 4);
+			dec_e = (-1);
 		}
 
-		// LED OFF
-		if (_e < _n / 2 && _e > -_n / 2)
+		if (_e < -_Xp / 2)
 		{
-			PORTC = (0x00);
+			_cv = 0;
+		}
+		else if (_e > _Xp / 2)
+		{
+			_cv = 100;
+		}
+		else
+		{
+			int i = 0;
+			_cv = ((2 * _e + _Xp) / (2 * _Xp))*100; // Stosunek proporcji e do _Xp
 		}
 
-		// LED CV2 ON
-		if (_e < ((-_n / 2) - _h))
+		for (int j = 0; j <= 100; j += 5)
 		{
-			PORTC = ~(0x01 << 3);
+
+			if (_cv == 0)
+			{
+				PORTC = ~(0x01 << 3);
+				break;
+			}
+			if (j <= _cv)
+			{
+				PORTC = (0x01 << 3);
+			}
+			else
+			{
+				PORTC = ~(0x01 << 3);
+			}
+			_delay_ms(T0*50);
 		}
 
+		//przyciski
 		if (!(PINB & (8 << PB0)))
 		{
-			_sp = 500;
+			_sp = 50;
 		}
 		if (!(PINB & (4 << PB0)))
 		{
-			_sp = 400;
+			_sp = 40;
 		}
 		if (!(PINB & (2 << PB0)))
 		{
-			_h = 80;
-			_n = 160;
+			_Xp = 30;
 		}
 		if (!(PINB & (1 << PB0)))
 		{
-			_h = 100;
-			_n = 200;
+			_Xp = 40;
 		}
 
 		LCD2x16_pos(1, 1);
-		sprintf(tmp, "SP=%2d PV=%3d.%1d%% ", _sp / 10, _ipv, abs(_decpv));
+		sprintf(tmp, "sp=%2d%% PV=%3d.%1d%%  ", (int)_sp, _ipv, _decpv);
 		for (i = 0; i < 16; i++)
-		{
 			LCD2x16_putchar(tmp[i]);
-		}
 
 		LCD2x16_pos(2, 1);
-		sprintf(tmp, "H=%2d   E=%3d.%1d%% ", _h / 10, int_e, abs(dec_e));
+		sprintf(tmp, "Xp=%2d%%  E=%3d.%1d%%   ", _Xp, (int)_e, dec_e);
 		for (i = 0; i < 16; i++)
-		{
 			LCD2x16_putchar(tmp[i]);
-		}
-		delay_ms(500);
+		delay_ms(50);
 	}
 
 	return 0;
